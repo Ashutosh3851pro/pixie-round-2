@@ -28,7 +28,7 @@ Scrapes events, then starts the dashboard at http://localhost:8000
 ```
 
 - **Scraper**: Fetches https://www.district.in/events/, extracts event links, visits each event page, parses JSON-LD and HTML
-- **Storage**: Google Sheets only (no database). Requires `GOOGLE_SHEETS_ID` and `credentials.json`
+- **Storage**: Google Sheets only (no database). Requires `GOOGLE_SHEETS_ID` and either `GOOGLE_CREDENTIALS` (JSON string) or `credentials.json`
 - **API**: FastAPI serves `/api/events`, `/api/analytics`, and the dashboard UI
 
 ## Scraping Strategy
@@ -57,6 +57,7 @@ Create `.env` from `.env.example`. **Required:**
 | Variable | Description |
 |----------|-------------|
 | `GOOGLE_SHEETS_ID` | Sheet ID from the Google Sheet URL |
+| `GOOGLE_CREDENTIALS` | Service account JSON as string (alternative to file) |
 | `GOOGLE_CREDENTIALS_FILE` | Path to service account JSON (default: credentials.json) |
 
 **Optional:**
@@ -72,7 +73,7 @@ Create `.env` from `.env.example`. **Required:**
 
 1. Create a [Google Cloud project](https://console.cloud.google.com/), enable Sheets API
 2. Create a service account, download JSON key
-3. Save as `credentials.json` in project root
+3. Either save as `credentials.json` in project root, or set `GOOGLE_CREDENTIALS` to the JSON content as an env var
 4. Create a Google Sheet, share it with the service account email (Editor)
 5. Set `GOOGLE_SHEETS_ID` to the sheet ID from the URL
 6. The scraper writes to the "Events" worksheet (or first sheet)
@@ -86,7 +87,7 @@ python -m venv .venv
 source .venv/bin/activate   # Windows: venv\Scripts\activate
 pip install -r requirements.txt
 cp .env.example .env
-# Edit .env – set GOOGLE_SHEETS_ID and add credentials.json
+# Edit .env – set GOOGLE_SHEETS_ID and GOOGLE_CREDENTIALS (or credentials.json)
 python run.py
 ```
 

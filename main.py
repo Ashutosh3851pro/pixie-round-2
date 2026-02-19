@@ -16,14 +16,8 @@ def get_scrapers(city: str, platforms: List[str]):
 
 
 def run_once(city: str, platforms: List[str] | None = None) -> int:
-    if not config.GOOGLE_SHEETS_ID or not config.GOOGLE_CREDENTIALS_FILE:
+    if not config.GOOGLE_SHEETS_ID or not config.GOOGLE_CREDENTIALS:
         raise ValueError("Set GOOGLE_SHEETS_ID and GOOGLE_CREDENTIALS_FILE in .env")
-
-    creds_path = Path(config.GOOGLE_CREDENTIALS_FILE)
-    if not creds_path.is_absolute():
-        creds_path = config.BASE_DIR / creds_path
-    if not creds_path.exists():
-        raise ValueError(f"Credentials file not found: {creds_path}")
 
     platforms = platforms or config.PLATFORMS
     events = []

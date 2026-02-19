@@ -24,9 +24,7 @@ class Config:
         ]
 
         self.GOOGLE_SHEETS_ID = os.getenv("GOOGLE_SHEETS_ID", "")
-        self.GOOGLE_CREDENTIALS_FILE = os.getenv(
-            "GOOGLE_CREDENTIALS_FILE", "credentials.json"
-        )
+        self.GOOGLE_CREDENTIALS = os.getenv("GOOGLE_CREDENTIALS", "")  # JSON string
 
         self.MAX_RETRIES = int(os.getenv("MAX_RETRIES", 3))
         self.REQUEST_TIMEOUT = int(os.getenv("REQUEST_TIMEOUT", 30))

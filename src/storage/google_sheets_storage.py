@@ -1,3 +1,4 @@
+import json
 from pathlib import Path
 from typing import List
 from datetime import datetime
@@ -25,27 +26,33 @@ HEADERS = [
 
 
 class GoogleSheetsStorage(BaseStorage):
-    def __init__(self, sheet_id: str = None, credentials_file: str = None):
+    def __init__(
+        self,
+        sheet_id: str = None,
+        credentials_file: str = None,
+        credentials_json: str = None,
+    ):
         super().__init__()
         self.sheet_id = sheet_id or config.GOOGLE_SHEETS_ID
-        creds = credentials_file or config.GOOGLE_CREDENTIALS_FILE
-        self.credentials_file = (
-            creds if Path(creds).is_absolute() else str(config.BASE_DIR / creds)
-        )
+        self.credentials_json = credentials_json or config.GOOGLE_CREDENTIALS
         self._client = None
         self._worksheet = None
 
     def _get_client(self):
-        if not self.credentials_file or not self.sheet_id:
-            raise ValueError("Set GOOGLE_SHEETS_ID and GOOGLE_CREDENTIALS_FILE")
+        has_creds = bool(self.credentials_json)
+        if not has_creds or not self.sheet_id:
+            raise ValueError(
+                "Set GOOGLE_SHEETS_ID and either GOOGLE_CREDENTIALS (JSON string) "
+                "or GOOGLE_CREDENTIALS_FILE"
+            )
         if self._client is None:
             scopes = [
                 "https://www.googleapis.com/auth/spreadsheets",
                 "https://www.googleapis.com/auth/drive",
             ]
-            creds = Credentials.from_service_account_file(
-                self.credentials_file, scopes=scopes
-            )
+            if self.credentials_json:
+                info = json.loads(self.credentials_json)
+                creds = Credentials.from_service_account_info(info, scopes=scopes)
             self._client = gspread.authorize(creds)
         return self._client
 
