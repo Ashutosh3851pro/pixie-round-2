@@ -1,0 +1,15 @@
+# Railway configuration
+# https://docs.railway.com/guides/cron-jobs
+#
+# Setup: Create a cron service in Railway, name it "scraper" (or update
+# the service field below). Set GOOGLE_SHEETS_ID and GOOGLE_CREDENTIALS
+# in the service's environment variables.
+
+[build]
+builder = "railpack"
+
+[deploy]
+[[cron]]
+service = "scraper"
+schedule = "0 */6 * * *"
+command = "python main.py"
